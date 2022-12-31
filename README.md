@@ -1,10 +1,12 @@
 # NLP Fusion
 NLP Fusion is an Autodesk Fusion 360 Add-in to automate tasks with natural language prompts. Powered by codex.
 
-Here's an example:\n
+Here's an example:
+
 <img src="readimgs/prompt.jpg" width=50% height=50%>
 
 Result:
+
 <img src="readimgs/square_with_hole.jpg" width=50% height=50%>
 
 ## Installation
