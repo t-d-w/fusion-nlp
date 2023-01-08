@@ -4,6 +4,7 @@ from ...lib import fusion360utils as futil
 from ... import config
 import sys
 import json
+import request_utils
 
 _PATH = 'C:\\Users\\Thomas D Wilkinson\\AppData\\Local\\Autodesk\\webdeploy\\production\\f0f1459572ae987db1490b82e7990102aa92065e\\Python\\site-packages'
 print(f'path: {sys.path}')
@@ -146,16 +147,16 @@ def command_execute(args: adsk.core.CommandEventArgs):
     
     refs+='\n\"\"\"\n' + natty_lang + '\n\"\"\"'
     fullinput=baseinput + refs
+    #fullinput=baseinput + '\n\"\"\"\n' + natty_lang + '\n\"\"\"'
     
-    
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-    print(f'The key: {openai.api_key}')
-    futil.log(f'{CMD_NAME} Requesting Open AI Code with input: \n {fullinput}')
+    #openai.api_key = os.getenv("OPENAI_API_KEY")
+    #print(f'The key: {openai.api_key}')
+    futil.log(f'{CMD_NAME} Requesting Open AI Code with input (* marks the start and end *): \n*{fullinput}*')
     response = openai.Completion.create(
     model="code-davinci-002",
     prompt=fullinput,
     temperature=0,
-    max_tokens=4000,
+    max_tokens=1584,
     top_p=1,
     frequency_penalty=0,
     presence_penalty=0,
@@ -163,6 +164,7 @@ def command_execute(args: adsk.core.CommandEventArgs):
     )
     futil.log(f'{CMD_NAME} Recieved response from openai \n {response}')
     print('type:', type(response))    
+    
     thecode=response['choices'][0]['text']
     futil.log(f'{CMD_NAME} Executing the following code after design and root component already established:\n{thecode}')
     #msg = f'The text input was:\n {natty_lang} \n Full string sent to openAI: {input} \n Everything recieved from openAI: {response} \n Code well be using: {thecode}'
@@ -172,7 +174,8 @@ def command_execute(args: adsk.core.CommandEventArgs):
     design = adsk.fusion.Design.cast(app.activeProduct)
     rootComp = design.rootComponent
     exec(thecode)
-    
+    #exec(refs)
+
     with open(refloc, 'a') as file:
         futil.log(f'{CMD_NAME} Saving code in refs.py for future reference.')
         file.write('\"\"\"\n' + natty_lang + '\n\"\"\"')
